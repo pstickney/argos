@@ -51,20 +51,20 @@ public class NetworkingService extends AbstractService
     @Override
     protected void forEach(String s) {
         LOG.debug("{}.forEach({})", getClass().getSimpleName(), s);
-        NetworkDTO net = new NetworkDTO();
+        NetworkDTO stat = new NetworkDTO();
         StringTokenizer tokenizer = new StringTokenizer(s, " ");
         tokenizer.nextToken(); // consume timestamp
 
-        net.setTimestamp(timestamp);
-        net.setComputerId(compId);
+        stat.setTimestamp(timestamp);
+        stat.setComputerId(compId);
 
         tokenizer.nextToken();
-        net.setDevice(tokenizer.nextToken());
-        net.setIn(Double.valueOf(tokenizer.nextToken()).intValue());
-        net.setOut(Double.valueOf(tokenizer.nextToken()).intValue());
+        stat.setDevice(tokenizer.nextToken());
+        stat.setIn(Double.valueOf(tokenizer.nextToken()).intValue());
+        stat.setOut(Double.valueOf(tokenizer.nextToken()).intValue());
 
-        LOG.debug(net);
-        stats.put(net.getDevice(), net);
+        LOG.debug(stat);
+        stats.put(stat.getDevice(), stat);
     }
 
     @Override

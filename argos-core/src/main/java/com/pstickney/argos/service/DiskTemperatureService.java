@@ -52,18 +52,18 @@ public class DiskTemperatureService extends AbstractService
     @Override
     protected void forEach(String s) {
         LOG.debug("{}.forEach({})", getClass().getSimpleName(), s);
-        TemperatureDTO temp = new TemperatureDTO();
+        TemperatureDTO stat = new TemperatureDTO();
         StringTokenizer tokenizer = new StringTokenizer(s, ":");
 
-        temp.setTimestamp(timestamp);
-        temp.setComputerId(compId);
+        stat.setTimestamp(timestamp);
+        stat.setComputerId(compId);
 
-        temp.setDevice(tokenizer.nextToken());
+        stat.setDevice(tokenizer.nextToken());
         tokenizer.nextToken();
-        temp.setValue(Integer.valueOf(tokenizer.nextToken()));
+        stat.setValue(Integer.valueOf(tokenizer.nextToken()));
 
-        LOG.debug(temp);
-        stats.put(temp.getDevice(), temp);
+        LOG.debug(stat);
+        stats.put(stat.getDevice(), stat);
     }
 
     @Override

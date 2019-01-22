@@ -9,11 +9,9 @@ import java.io.IOException;
 public class PackageDependency implements Dependency
 {
     private Logger LOG = LogManager.getLogger(PackageDependency.class);
-    private String pkg;
     private String[] dpkgCmd;
 
     public PackageDependency(String pkg) {
-        this.pkg = pkg;
         this.dpkgCmd = new String[] {"sh", "-c", "dpkg -l " + pkg};
     }
 
@@ -28,14 +26,5 @@ public class PackageDependency implements Dependency
             Thread.currentThread().interrupt();
         }
         return false;
-    }
-
-    public String getPkg() {
-        return pkg;
-    }
-
-    public PackageDependency setPkg(String pkg) {
-        this.pkg = pkg;
-        return this;
     }
 }

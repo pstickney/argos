@@ -51,18 +51,18 @@ public class DiskService extends AbstractService
     @Override
     public void forEach(String s) {
         LOG.debug("{}.forEach({})", getClass().getSimpleName(), s);
-        DiskDTO disk = new DiskDTO();
+        DiskDTO stat = new DiskDTO();
         StringTokenizer tokenizer = new StringTokenizer(s, " ");
 
-        disk.setTimestamp(timestamp);
-        disk.setComputerId(compId);
-        disk.setDevice(tokenizer.nextToken());
-        disk.setTps(Double.valueOf(tokenizer.nextToken()).intValue());
-        disk.setRead(Double.valueOf(tokenizer.nextToken()).intValue());
-        disk.setWrite(Double.valueOf(tokenizer.nextToken()).intValue());
+        stat.setTimestamp(timestamp);
+        stat.setComputerId(compId);
+        stat.setDevice(tokenizer.nextToken());
+        stat.setTps(Double.valueOf(tokenizer.nextToken()).intValue());
+        stat.setRead(Double.valueOf(tokenizer.nextToken()).intValue());
+        stat.setWrite(Double.valueOf(tokenizer.nextToken()).intValue());
 
-        LOG.debug(disk);
-        stats.put(disk.getDevice(), disk);
+        LOG.debug(stat);
+        stats.put(stat.getDevice(), stat);
     }
 
     @Override
