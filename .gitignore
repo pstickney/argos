@@ -1,4 +1,5 @@
 target/
+log/
 node/
 node_modules/
 
