@@ -1,0 +1,15 @@
+[Unit]
+Description=Java System Monitor for Linux
+After=network.target network-online.target
+
+[Service]
+WorkingDirectory=/usr/lib/argos
+ExecStart=/bin/bash -c '/usr/lib/argos/argos-init'
+Type=simple
+User=argos
+Group=argos
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

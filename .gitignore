@@ -1,5 +1,10 @@
+target/
+node/
+node_modules/
+
 .idea
-target
 *.iml
 *.ipr
 *.iws
+
+env.sh

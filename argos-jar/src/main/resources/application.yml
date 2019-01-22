@@ -1,0 +1,49 @@
+spring:
+  profiles:
+    active: dev
+
+config:
+  name: default
+  environment: default
+  devices: "/dev/sd[b-z]"
+  services:
+    - name: "CpuService"
+      delay: 1
+      period: 5
+    - name: "CpuTemperatureService"
+      delay: 1
+      period: 10
+    - name: "DiskService"
+      delay: 1
+      period: 4
+    - name: "DiskTemperatureService"
+      delay: 1
+      period: 10
+    - name: "NetworkingService"
+      delay: 1
+      period: 3
+    - name: "MemoryService"
+      delay: 1
+      period: 5
+
+---
+
+spring:
+  profiles: dev
+  config:
+    location: classpath:application.yml
+
+config:
+  name: development
+  environment: dev
+
+---
+
+spring:
+  profiles: prod
+  config:
+    location: /etc/argos/config.yml
+
+config:
+  name: production
+  environment: prod
