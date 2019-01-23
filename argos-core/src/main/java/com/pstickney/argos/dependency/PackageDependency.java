@@ -1,24 +1,31 @@
 package com.pstickney.argos.dependency;
 
+import com.pstickney.argos.util.ProcessResult;
 import com.pstickney.argos.util.ProcessUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-public class PackageDependency implements Dependency
+public class PackageDependency extends Dependency
 {
     private Logger LOG = LogManager.getLogger(PackageDependency.class);
-    private String[] dpkgCmd;
 
     public PackageDependency(String pkg) {
-        this.dpkgCmd = new String[] {"sh", "-c", "dpkg -l " + pkg};
+        this.setPkgName(pkg);
+        this.setPkgCmd(new String[] {"sh", "-c", "dpkg -l " + pkg});
     }
 
     @Override
-    public boolean exists() {
+    public boolean exists()
+    {
+        ProcessResult result;
+
         try {
-            return ProcessUtils.exec(dpkgCmd).getExitStatus() == 0;
+            result = ProcessUtils.exec(getPkgCmd());
+
+            LOG.debug(result.toString());
+            return result.getExitStatus() != 0;
         } catch (IOException e) {
             LOG.error(e);
         } catch (InterruptedException e) {

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +27,8 @@ public class MemoryService extends AbstractService
     {
         stats = new HashMap<>();
         cmd = new String[]{"sh", "-c", "free"};
-        dependencies = Collections.unmodifiableList(
-            Arrays.asList(
-                DependencyFactory.createPackageDependencyProcps()
-            )
+        dependencies = Collections.singletonList(
+            DependencyFactory.createPackageDependencyProcps()
         );
     }
 

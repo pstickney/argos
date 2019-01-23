@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +28,8 @@ public class CpuService extends AbstractService
     {
         stats = new HashMap<>();
         cmd = new String[]{"sh", "-c", "mpstat -P ALL 1 1"};
-        dependencies = Collections.unmodifiableList(
-            Arrays.asList(
-                DependencyFactory.createPackageDependencySysstat()
-            )
+        dependencies = Collections.singletonList(
+            DependencyFactory.createPackageDependencySysstat()
         );
     }
 
@@ -59,13 +56,13 @@ public class CpuService extends AbstractService
         stat.setTimestamp(timestamp);
         tokenizer.nextToken(); // consume average
         stat.setCpuId(Integer.valueOf(tokenizer.nextToken()));
-        stat.setUsr(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setNice(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setSys(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setIowait(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setIrq(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setSoft(Precision.round(new Double(tokenizer.nextToken()), 1));
-        stat.setSteal(Precision.round(new Double(tokenizer.nextToken()), 1));
+        stat.setUsr(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setNice(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setSys(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setIowait(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setIrq(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setSoft(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
+        stat.setSteal(Precision.round(Double.valueOf(tokenizer.nextToken()), 1));
 
         LOG.debug(stat);
         stats.put(stat.getCpuId(), stat);

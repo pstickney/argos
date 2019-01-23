@@ -1,7 +1,6 @@
 package com.pstickney.argos.service;
 
 import com.pstickney.argos.dependency.Dependency;
-import com.pstickney.argos.exception.UnsatisfiedDependencyException;
 import com.pstickney.argos.util.ProcessResult;
 import com.pstickney.argos.util.ProcessUtils;
 import org.apache.logging.log4j.LogManager;
@@ -28,8 +27,25 @@ public abstract class AbstractService implements Runnable
 
     public void init(String id)
     {
-        if( !hasAllDependencies() )
-            throw new UnsatisfiedDependencyException("Missing dependency");
+        if( !hasAllDependencies() ) {
+            for( Dependency dep : dependencies ) {
+                try {
+                    LOG.debug("Trying to install {}", dep.getPkgName());
+                    ProcessResult result = ProcessUtils.exec("sh", "-c", "apt install -y " + dep.getPkgName());
+
+                    if( result.getExitStatus() != 0 ) {
+                        LOG.debug("Process returned a non 0 exit status: {}", result.getExitStatus());
+                    }
+                    LOG.debug(result.toString());
+                } catch (IOException e) {
+                    LOG.error(e);
+                }catch (InterruptedException e) {
+                    LOG.error(e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+//            throw new UnsatisfiedDependencyException("Missing dependency: " + dependencies);
+        }
         compId = id;
     }
 

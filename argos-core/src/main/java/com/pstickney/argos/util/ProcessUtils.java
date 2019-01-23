@@ -7,34 +7,37 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ProcessUtils
 {
     private static Logger LOG = LogManager.getLogger(ProcessUtils.class);
-    private static Runtime runtime = Runtime.getRuntime();
 
     public static ProcessResult exec(String... cmds) throws IOException, InterruptedException
     {
         LOG.debug("EXEC PROCESS " + Arrays.toString(cmds));
 
-        Internals internals = new Internals();
+        List<String> stdout = new ArrayList<>();
+        List<String> stderr = new ArrayList<>();
         ProcessResult result = new ProcessResult();
+        ProcessBuilder builder = new ProcessBuilder(cmds);
 
-        Process process = runtime.exec(cmds);
-        ProcessStream stdout = new ProcessStream(process.getInputStream(), internals.stdout);
-        ProcessStream stderr = new ProcessStream(process.getErrorStream(), internals.stderr);
+        Process process = builder.start();
+        ProcessStream stdoutStream = new ProcessStream(process.getInputStream(), stdout::add);
+        ProcessStream stderrStream = new ProcessStream(process.getErrorStream(), stderr::add);
 
-        stdout.start();
-        stderr.start();
+        stdoutStream.start();
+        stderrStream.start();
 
         int exit = process.waitFor();
+        Thread.sleep(500);
 
         result.setExitStatus(exit);
-        result.setStdout(internals.stdout);
-        result.setStderr(internals.stderr);
+        result.setStdout(stdout);
+        result.setStderr(stderr);
 
         LOG.debug("EXEC PROCESS FINISHED");
         return result;
@@ -42,48 +45,28 @@ public class ProcessUtils
 
 }
 
-class Internals
-{
-    List<String> stdout;
-    List<String> stderr;
-
-    Internals()
-    {
-        stdout = new LinkedList<>();
-        stderr = new LinkedList<>();
-    }
-}
-
 class ProcessStream extends Thread
 {
     private Logger LOG = LogManager.getLogger(ProcessStream.class);
-    private InputStream in;
-    private List<String> list;
-    private BufferedReader reader;
 
-    ProcessStream(InputStream in, List<String> list)
+    private InputStream in;
+    private Consumer<String> consumer;
+
+    ProcessStream(InputStream in, Consumer<String> consumer)
     {
         this.in = in;
-        this.list = list;
+        this.consumer = consumer;
     }
 
     @Override
     public void run()
     {
-        String line;
-        reader = new BufferedReader(new InputStreamReader(in));
-
         try {
-            while( (line = reader.readLine()) != null )
-                list.add(line.trim());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            reader.lines().forEach(consumer);
+            reader.close();
         } catch (IOException e) {
             LOG.error(e);
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                LOG.error(e);
-            }
         }
     }
 }

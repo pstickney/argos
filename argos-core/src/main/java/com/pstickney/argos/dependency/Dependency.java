@@ -1,6 +1,13 @@
 package com.pstickney.argos.dependency;
 
-public interface Dependency
+import lombok.Data;
+import lombok.ToString;
+
+@Data
+public abstract class Dependency
 {
-    boolean exists();
+    private String pkgName;
+    @ToString.Exclude private String[] pkgCmd;
+
+    public abstract boolean exists();
 }

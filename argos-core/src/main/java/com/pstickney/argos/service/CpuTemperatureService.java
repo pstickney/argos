@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 @Service
 public class CpuTemperatureService extends AbstractService
@@ -24,10 +27,8 @@ public class CpuTemperatureService extends AbstractService
     {
         stats = new HashMap<>();
         cmd = new String[]{"sh", "-c", "sensors"};
-        dependencies = Collections.unmodifiableList(
-            Arrays.asList(
-                DependencyFactory.createPackageDependencyLmsensors()
-            )
+        dependencies = Collections.singletonList(
+            DependencyFactory.createPackageDependencyLmsensors()
         );
     }
 

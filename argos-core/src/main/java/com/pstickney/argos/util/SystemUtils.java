@@ -17,13 +17,15 @@ public class SystemUtils
         try {
             result = ProcessUtils.exec(cmd);
 
-            if( result.getExitStatus() != 0 ) {
+            if (result.getExitStatus() != 0) {
                 LOG.debug("Process returned non-0 exist status: {}", result.getExitStatus());
                 return "UNKNOWN";
             }
 
             LOG.debug(result.toString());
-            return result.getStdout().get(0);
+            return result.getStdout().stream()
+                    .findFirst()
+                    .orElse("UNKNOWN");
         } catch (IOException e) {
             LOG.error(e);
         } catch (InterruptedException e) {
